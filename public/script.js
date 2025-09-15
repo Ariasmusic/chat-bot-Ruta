@@ -2,6 +2,9 @@ const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
+// URL del backend en Render (ajústala con tu dominio real)
+const API_URL = "https://chat1819.onrender.com/api/chat";
+
 function addMessage(content, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
@@ -18,7 +21,7 @@ async function sendMessage() {
   userInput.value = "";
 
   try {
-    const res = await fetch("/api/chat", {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
