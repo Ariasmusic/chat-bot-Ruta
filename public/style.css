@@ -1,0 +1,241 @@
+/* ======== FUENTES Y RESET ======== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'IM Fell English', serif;
+  background: url("img/fondo.png") repeat;
+  color: #2c1a0e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ======== APP WRAPPER ======== */
+.app-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  position: relative;
+}
+
+/* ======== ENCABEZADO ======== */
+.chat-header {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #4e342e, #2c1a0e);
+  color: #f8e4c9;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  position: relative;
+  font-family: 'Cinzel', serif;
+}
+
+.chat-header h1 {
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.3rem;
+}
+
+.chat-header .subtitle {
+  font-size: 1rem;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* ======== CHAT CONTAINER ======== */
+.chat-container {
+  background: url("https://www.transparenttextures.com/patterns/paper-fibers.png") repeat;
+  border: 3px solid #5c3d2e;
+  border-radius: 15px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ======== CHAT BOX ======== */
+.chat-box {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;          /* 🔥 Scroll cuando hay muchos mensajes */
+  max-height: 500px;         /* 🔥 Altura máxima del área de mensajes */
+  scrollbar-width: thin;
+  scrollbar-color: #8d6e63 rgba(0,0,0,0.1);
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-box::-webkit-scrollbar-thumb {
+  background: #8d6e63;
+  border-radius: 10px;
+}
+.chat-box::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+}
+
+
+/* ======== MENSAJES ======== */
+.message {
+  margin: 0.6rem 0;
+  display: flex;
+  align-items: flex-start;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 0.8rem 1rem;
+  border-radius: 15px;
+  line-height: 1.4;
+  position: relative;
+  font-size: 1rem;
+
+  /* 🔥 NUEVO: evitar que se agrande infinito */
+  max-height: 200px;      /* altura máxima de la burbuja */
+  overflow-y: auto;       /* activa scroll interno */
+}
+/* Usuario (tono más moderno) */
+/* Scroll interno de las burbujas */
+.message-bubble::-webkit-scrollbar {
+  width: 6px;
+}
+.message-bubble::-webkit-scrollbar-thumb {
+  background: #8d6e63;
+  border-radius: 10px;
+}
+.message-bubble::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+}
+
+/* Usuario (tono más moderno) */
+.message.user .message-bubble {
+  background: #d9fdd3;
+  color: #1b3a1a;
+  border: 2px solid #4caf50;
+  border-bottom-right-radius: 0;
+  font-family: 'Cinzel', serif;
+}
+
+/* Narrador (pergamino antiguo) */
+.message.bot .message-bubble {
+  background: #f8e4c9;
+  border: 2px solid #5c3d2e;
+  color: #2c1a0e;
+  border-bottom-left-radius: 0;
+  font-family: 'IM Fell English', serif;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+}
+/* Avatares */
+.message .avatar {
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.message.user .avatar {
+  display: none; /* el usuario no necesita avatar */
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ======== FOOTER ======== */
+.chat-footer {
+  border-top: 2px solid #8d6e63;
+  padding-top: 0.8rem;
+  display: flex;
+  justify-content: center;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+  background: #f8e4c9;
+  border: 2px solid #5c3d2e;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#user-input {
+  flex: 1;
+  border: none;
+  padding: 0.8rem;
+  background: transparent;
+  resize: none;
+  font-family: 'IM Fell English', serif;
+  font-size: 1rem;
+}
+
+#user-input:focus {
+  outline: none;
+}
+
+#send-btn {
+  background: #4e342e;
+  color: #f8e4c9;
+  border: none;
+  padding: 0 1rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: 0.3s;
+}
+
+#send-btn:hover {
+  background: #2c1a0e;
+}
+
+/* ======== PERSONAJE NARRADOR ======== */
+.character-box {
+  background: #f8e4c9;
+  border: 3px solid #5c3d2e;
+  border-radius: 15px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.character-avatar {
+  width: 300px;
+  height: 450px;
+  border-radius: 12px;
+  border: 3px solid #5c3d2e;
+  margin-bottom: 1rem;
+  object-fit: cover;
+}
+
+.character-info h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.character-info p {
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: #3b2a1a;
+}
