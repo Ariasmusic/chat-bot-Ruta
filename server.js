@@ -13,7 +13,13 @@ const openai = new OpenAI({
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// ✅ CORS — permitir solo el dominio del frontend en Render
+app.use(cors({
+  origin: "https://chat-bot-ruta.onrender.com", // dominio frontend
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
 
 // 📂 Servir archivos estáticos desde la carpeta "public"
@@ -44,14 +50,14 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// 🌐 Ruta raíz → devuelve index.html (evita "Cannot GET /")
+// 🌐 Ruta raíz → devuelve el index.html desde la carpeta "public"
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname,  "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✨ Manejo de cualquier otra ruta no definida (SPA)
+// ✨ Manejo de cualquier otra ruta no definida (Single Page Application)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // 🚀 Iniciar servidor
