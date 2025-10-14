@@ -4,8 +4,9 @@ const path = require("path");
 require("dotenv").config();
 const { OpenAI } = require("openai");
 
+// Configuración OpenAI (Gemini API)
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // Obligatorio para que el SDK no falle
+  apiKey: process.env.OPENAI_API_KEY,
   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
 });
 
@@ -14,8 +15,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// 📂 Servir archivos estáticos desde la carpeta "public"
 app.use(express.static(path.join(__dirname, "public")));
 
+// 🧠 Ruta API para el chatbot
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -40,6 +44,17 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// 🌐 Ruta raíz → devuelve index.html (evita "Cannot GET /")
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname,  "index.html"));
+});
+
+// ✨ Manejo de cualquier otra ruta no definida (SPA)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// 🚀 Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor en http://localhost:${PORT}`);
+  console.log(`✅ Servidor escuchando en http://localhost:${PORT}`);
 });
