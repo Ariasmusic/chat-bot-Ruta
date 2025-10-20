@@ -2,7 +2,7 @@ const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
-// URL del backend en Render (ajústala con tu dominio real)
+// URL del backend en Render
 const API_URL = "https://chat1819.onrender.com/api/chat";
 
 function addMessage(content, sender) {
@@ -25,16 +25,23 @@ async function sendMessage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
+      mode: "cors", // ✅ Esto es clave para peticiones cross-origin
     });
+
+    if (!res.ok) {
+      throw new Error(`Error HTTP: ${res.status}`);
+    }
 
     const data = await res.json();
     if (data.reply) {
       addMessage(data.reply, "bot");
+    } else if (data.error) {
+      addMessage(`⚠️ ${data.error}`, "bot");
     } else {
-      addMessage("⚠️ Error en la respuesta.", "bot");
+      addMessage("⚠️ Respuesta inesperada del servidor.", "bot");
     }
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error de conexión:", err);
     addMessage("❌ No se pudo conectar con el servidor.", "bot");
   }
 }
