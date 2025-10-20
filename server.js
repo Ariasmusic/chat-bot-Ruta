@@ -13,13 +13,13 @@ const openai = new OpenAI({
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Lista de dominios permitidos
+// ✅ Dominios permitidos
 const allowedOrigins = [
-  "https://chat-bot-ruta.onrender.com", // Frontend en Render
-  "http://localhost:5500"              // Para desarrollo local (opcional)
+  "https://chat-bot-ruta.onrender.com",
+  "http://localhost:5500"
 ];
 
-// ✅ Configuración CORS
+// ✅ CORS
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -35,16 +35,14 @@ app.use(
   })
 );
 
-// ✅ Manejo manual de preflight OPTIONS
-app.options("*", cors());
-
-// ✅ Middleware JSON
+// ✅ Middleware
 app.use(express.json());
-
-// 📂 Servir archivos estáticos desde la carpeta "public"
 app.use(express.static(path.join(__dirname, "public")));
 
-// 🧠 Ruta API para el chatbot
+// ✅ Preflight para /api/chat (IMPORTANTE)
+app.options("/api/chat", cors());
+
+// 🧠 API del chatbot
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -69,7 +67,7 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// 🌐 Ruta raíz
+// 🌐 Página raíz
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
