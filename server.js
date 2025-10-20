@@ -4,7 +4,6 @@ const path = require("path");
 require("dotenv").config();
 const { OpenAI } = require("openai");
 
-// Configuración OpenAI (Gemini API)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -13,22 +12,26 @@ const openai = new OpenAI({
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ CORS — permitir solo el dominio del frontend
+// ✅ CORS — permitir el dominio del frontend y preflight
 app.use(cors({
   origin: "https://chat-bot-ruta.onrender.com",
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
+  allowedHeaders: ["Content-Type"],
 }));
 
-// ✅ Muy importante para solicitudes preflight OPTIONS
-app.options("*", cors());
+// ✅ Responder manualmente a preflight OPTIONS (Render a veces lo requiere)
+app.options("*", cors({
+  origin: "https://chat-bot-ruta.onrender.com",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+}));
 
 app.use(express.json());
 
 // 📂 Servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
 
-// 🧠 API Chat
+// 🧠 Ruta API para el chatbot
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -53,16 +56,16 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// 🌐 Rutas
+// 🌐 Ruta raíz
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// ✨ SPA fallback
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// 🚀 Servidor
 app.listen(PORT, () => {
   console.log(`✅ Servidor escuchando en http://localhost:${PORT}`);
 });
