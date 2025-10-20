@@ -13,19 +13,22 @@ const openai = new OpenAI({
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ CORS — permitir solo el dominio del frontend en Render
+// ✅ CORS — permitir solo el dominio del frontend
 app.use(cors({
-  origin: "https://chat-bot-ruta.onrender.com", // dominio frontend
-  methods: ["GET", "POST"],
+  origin: "https://chat-bot-ruta.onrender.com",
+  methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
 }));
 
+// ✅ Muy importante para solicitudes preflight OPTIONS
+app.options("*", cors());
+
 app.use(express.json());
 
-// 📂 Servir archivos estáticos desde la carpeta "public"
+// 📂 Servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
 
-// 🧠 Ruta API para el chatbot
+// 🧠 API Chat
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -50,17 +53,16 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// 🌐 Ruta raíz → devuelve el index.html desde la carpeta "public"
+// 🌐 Rutas
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✨ Manejo de cualquier otra ruta no definida (Single Page Application)
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// 🚀 Iniciar servidor
+// 🚀 Servidor
 app.listen(PORT, () => {
   console.log(`✅ Servidor escuchando en http://localhost:${PORT}`);
 });
