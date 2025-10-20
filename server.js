@@ -1,13 +1,10 @@
-import express from "express";
-import cors from "cors"
-
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 const { OpenAI } = require("openai");
 
-// Configuración OpenAI (Gemini API)
+// ✅ Configuración OpenAI (Gemini API)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -19,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 // ✅ Lista de dominios permitidos
 const allowedOrigins = [
   "https://chat-bot-ruta.onrender.com", // Frontend en Render
-  "http://localhost:5500",              // Para desarrollo local (opcional)
+  "http://localhost:5500"              // Para desarrollo local (opcional)
 ];
 
 // ✅ Configuración CORS
@@ -38,10 +35,10 @@ app.use(
   })
 );
 
-// ✅ Manejo manual de preflight OPTIONS (Render a veces no lo hace bien automáticamente)
+// ✅ Manejo manual de preflight OPTIONS
 app.options("*", cors());
 
-// Middleware para JSON
+// ✅ Middleware JSON
 app.use(express.json());
 
 // 📂 Servir archivos estáticos desde la carpeta "public"
@@ -72,12 +69,12 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// 🌐 Ruta raíz → devuelve index.html desde /public
+// 🌐 Ruta raíz
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✨ Cualquier otra ruta → index.html (SPA)
+// ✨ SPA fallback
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
