@@ -7,7 +7,7 @@ const { OpenAI } = require("openai");
 // ✅ Configuración OpenAI (Gemini API)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
 });
 
 const app = express();
@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 // ✅ Dominios permitidos
 const allowedOrigins = [
   "https://chat-bot-ruta.onrender.com",
-  "http://localhost:5500"
+  "http://localhost:5500",
 ];
 
 // ✅ CORS
@@ -48,21 +48,54 @@ app.post("/api/chat", async (req, res) => {
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: "Mensaje vacío" });
 
+    // 🟢 1. Detección de saludo
+    const texto = message.trim().toLowerCase();
+
+    const saludos = [
+      "hola",
+      "buenos días",
+      "buenas tardes",
+      "buenas noches",
+      "hey",
+      "qué más",
+      "que más",
+      "saludos",
+    ];
+
+    const esSaludo = saludos.some((s) => texto.startsWith(s));
+
+    if (esSaludo) {
+      // 🟢 2. Respuesta personalizada sin llamar a la API
+      const respuestas = [
+        "¡Hola! 👋 Soy tu guía histórico virtual de la Ruta Libertadora. ¿Sobre qué etapa o personaje deseas aprender hoy?",
+        "¡Saludos viajero del tiempo! 🚩 Estoy aquí para contarte los secretos de la Ruta Libertadora. ¿Por dónde quieres empezar?",
+        "¡Hola! Soy el guía digital de la gesta libertadora de 1819. ¿Te gustaría que te hable sobre Bolívar, los batallones o el recorrido?",
+      ];
+
+      const respuesta = respuestas[Math.floor(Math.random() * respuestas.length)];
+      return res.json({ reply: respuesta });
+    }
+
+    // 🧠 3. Si no es saludo → responder con la API de Gemini
     const completion = await openai.chat.completions.create({
       model: "gemini-2.0-flash",
       messages: [
-        { role: "system", content: "Eres un guía histórico de la Ruta Libertadora de 1819 en Colombia." },
-        { role: "user", content: message }
-      ]
+        {
+          role: "system",
+          content: "Eres un guía histórico de la Ruta Libertadora de 1819 en Colombia. Responde con tono educativo, amable y cercano.",
+        },
+        { role: "user", content: message },
+      ],
     });
 
     res.json({ reply: completion.choices[0].message.content });
   } catch (error) {
     console.error("Error en /api/chat:", error);
     const code = error.code === "insufficient_quota" ? 429 : 500;
-    const msg = error.code === "insufficient_quota"
-      ? "Se agotó la cuota de Gemini o la clave es inválida."
-      : "Error interno del servidor.";
+    const msg =
+      error.code === "insufficient_quota"
+        ? "Se agotó la cuota de Gemini o la clave es inválida."
+        : "Error interno del servidor.";
     res.status(code).json({ error: msg });
   }
 });
